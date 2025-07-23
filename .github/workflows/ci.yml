@@ -2,32 +2,39 @@ name: Vue.js CI/CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]  # 改为 master
   pull_request:
-    branches: [ master ]
+    branches: [ master ]  # 改为 master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4  # 更新到 v4 版本
+    - uses: actions/checkout@v4
+    
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
     
     - name: Setup Node.js
-      uses: actions/setup-node@v4  # 更新到 v4 版本
+      uses: actions/setup-node@v4
       with:
         node-version: '16'
-        cache: 'npm'  # 添加缓存提升性能
+        cache: 'pnpm'
         
     - name: Install dependencies
-      run: npm install
+      run: |
+        pnpm config set registry https://registry.npmmirror.com
+        pnpm install
       
     - name: Build
-      run: npm run build
+      run: pnpm run build
       
     - name: Upload build files
-      uses: actions/upload-artifact@v4  # 更新到 v4 版本
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: dist
-        retention-days: 5  # 设置保留时间
+        retention-days: 5
