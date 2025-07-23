@@ -22,6 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm install --no-audit --prefer-offline --legacy-peer-deps
+        npm install -D jest @vue/test-utils @vue/vue2-jest babel-jest
     
     - name: Lint
       run: npm run lint
