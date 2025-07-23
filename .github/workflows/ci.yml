@@ -2,9 +2,9 @@ name: Vue.js CI/CD
 
 on:
   push:
-    branches: [ master ]  # 改为 master
+    branches: [ master ]
   pull_request:
-    branches: [ master ]  # 改为 master
+    branches: [ master ]
 
 jobs:
   build:
@@ -13,24 +13,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup PNPM
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '16'
-        cache: 'pnpm'
+        cache: 'npm'  # 启用 npm 缓存
         
     - name: Install dependencies
       run: |
-        pnpm config set registry https://registry.npmmirror.com
-        pnpm install
+        npm config set registry https://registry.npmmirror.com  # 使用淘宝镜像
+        npm ci  # 使用 ci 命令替代 install，更快且更可靠
       
     - name: Build
-      run: pnpm run build
+      run: npm run build
       
     - name: Upload build files
       uses: actions/upload-artifact@v4
