@@ -17,12 +17,11 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '16'
-        cache: 'npm'  # 启用 npm 缓存
+        cache: 'npm'
         
     - name: Install dependencies
       run: |
-        npm config set registry https://registry.npmmirror.com  # 使用淘宝镜像
-        npm ci  # 使用 ci 命令替代 install，更快且更可靠
+        npm install --no-audit --prefer-offline
       
     - name: Build
       run: npm run build
