@@ -2,14 +2,14 @@ name: Vue.js CI/CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop, test, staging ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, develop, test, staging ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v4
     
@@ -28,13 +28,63 @@ jobs:
       
     - name: Run tests
       run: npm test
-      
-    - name: Build
+
+    # Development Environment
+    - name: Build Development
+      if: github.ref == 'refs/heads/develop'
       run: npm run build
-      
-    - name: Deploy to GitHub Pages
+      env:
+        NODE_ENV: development
+    
+    - name: Deploy to Dev
+      if: github.ref == 'refs/heads/develop'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        force_orphan: true
+        destination_dir: dev
+        
+    # Test Environment
+    - name: Build Test
+      if: github.ref == 'refs/heads/test'
+      run: npm run build:test
+      env:
+        NODE_ENV: test
+    
+    - name: Deploy to Test
+      if: github.ref == 'refs/heads/test'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        destination_dir: test
+        
+    # Staging Environment
+    - name: Build Staging
+      if: github.ref == 'refs/heads/staging'
+      run: npm run build:staging
+      env:
+        NODE_ENV: staging
+    
+    - name: Deploy to Staging
+      if: github.ref == 'refs/heads/staging'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        destination_dir: staging
+        
+    # Production Environment
+    - name: Build Production
+      if: github.ref == 'refs/heads/master'
+      run: npm run build
+      env:
+        NODE_ENV: production
+    
+    - name: Deploy to Production
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        destination_dir: prod

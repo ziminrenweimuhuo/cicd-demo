@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="game-container">
-      <h1>骰子游戏</h1>
+      <h1>骰子游戏-TEST</h1>
       <p class="instruction">点击任意骰子或"掷所有骰子"按钮开始游戏</p>
       <div class="total-score">总点数: {{ totalScore }}</div>
       <div class="dice-container">
