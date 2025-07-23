@@ -22,6 +22,12 @@ jobs:
     - name: Install dependencies
       run: |
         npm install --no-audit --prefer-offline
+    
+    - name: Lint
+      run: npm run lint
+      
+    - name: Run tests
+      run: npm test
       
     - name: Build
       run: npm run build
@@ -32,3 +38,10 @@ jobs:
         name: dist
         path: dist
         retention-days: 5
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
